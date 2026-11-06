@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 
 namespace DSA.Lab03
 {
@@ -27,21 +28,52 @@ namespace DSA.Lab03
 
         public void Set(int key, TValue value)
         {
+            int index = GetBucketIndex(key);// search only the correct bucket
+            List<Entry<TValue>> list = _buckets[index];
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (key == list[i].Key)
+                {
+                    list[i] = new Entry<TValue>(key, value);//
+                    return;                                 // replace
+                }
+            }
+            list.Add(new Entry<TValue>(key, value));// append and increment
+            _count++;
             // TODO: search only the correct bucket, replace or append.
-            throw new NotImplementedException();
         }
 
         public bool TryGetValue(int key, out TValue value)
         {
-            // TODO: search only the correct bucket.
             value = default!;
-            throw new NotImplementedException();
+            int index = GetBucketIndex(key);
+            List<Entry<TValue>> list = _buckets[index];
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (key == list[i].Key)
+                {
+                    value = list[i].Value;
+                    return true;
+                }
+            }
+            return false;
+
+            // TODO: search only the correct bucket.
         }
 
         public bool ContainsKey(int key)
         {
+            int index = GetBucketIndex(key);
+            List<Entry<TValue>> list = _buckets[index];
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (key == list[i].Key)
+                {
+                    return true;
+                }
+            }
+            return false;
             // TODO: reuse the lookup behavior if useful.
-            throw new NotImplementedException();
         }
 
         private int GetBucketIndex(int key)
